@@ -1,0 +1,20 @@
+{
+	"errno":0,
+	"data":{
+		"title":"卢森正品吉他民谣吉他40寸41寸木吉他初学者入门吉它学生男女乐器",
+		"price":358,
+		"express":0,
+		"monthlySales":12177,
+		"address":"广东广州",
+		"serve":["正品保证","赠送运险","极速退款","七天包换"],
+		"colors":[
+			{"type":"R-135 黑色","available":true,"imgSrc":"check01.jpg"},
+			{"type":"R-135 木色","available":true,"imgSrc":"check02.jpg"},
+			{"type":"R-135 日落色","available":false,"imgSrc":"check03.jpg"},
+			{"type":"R-135 蓝色","available":true,"imgSrc":"check04.jpg"},
+			{"type":"R-135 红色","available":false,"imgSrc":"check05.jpg"}
+		],
+		"detailImg":["detail01.jpg","detail02.jpg","detail03.jpg","detail04.jpg"],
+		"productImg":["product01.jpg","product02.jpg","product03.jpg","product04.jpg"]
+	}
+}

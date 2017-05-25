@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, width=device-width">
+	
+
+    <style>
+		#app{
+			display: none;
+		}
+	</style>
+    <link rel="stylesheet" href="/static/css/index_78f462c.css" />
+</head>
+<body>
+	<div id="app">
+		<div class="homeBg" v-show='isShowClassify && !isLeaveHome' v-on:tap='hiddeClassify'></div>
+		<div class="classifyTitle clearfix"  v-bind:class='{"showClassify":isShowClassify && !isLeaveHome}'>
+			<p>网站导航</p>
+			<ul>
+				<li><a href="#/list">品牌专区</a></li>
+				<li><a href="#/list">组合分类</a></li>
+				<li><a href="#/list">商品分类</a></li>
+				<li><a href="#/list">活动专场</a></li>
+				<li><a href="#/list">特价热销</a></li>
+			</ul>
+			<p>特色服务</p>
+			<ul>
+				<li><a href="#/home">演唱会</a></li>
+				<li><a href="#/home">音乐娱乐</a></li>
+				<li><a href="#/home">交流学习</a></li>
+			</ul>
+		</div>
+		<header>
+			<nav v-show='isShowSearch' v-bind:class='{"clearfix":true,"scrollWindow":isScrollWindow,"leaveHome":isLeaveHome}'>
+				<div class='classify'>
+					<a v-show='!isLeaveHome' v-on:tap='showClassify'></a>
+					<a href='#/home' v-show='isLeaveHome' class='goHome'></a>
+				</div>
+				<div class="search-container">
+					<i class="search-icon" v-on:tap='goSearch'></i>
+					<input type="text" placeholder='搜索想要的商品/店铺' v-model='search' v-on:keydown.enter='goSearch'>
+				</div>
+				<ul>
+					<li class='shopping-cart'>
+						<a href="#"></a>
+					</li>
+					<li class='user-login'>
+						<a href="#">登录</a>
+					</li>
+				</ul>
+			</nav>
+			<div class="classifyContainer">
+			</div>
+			<div v-bind:class="{'carousel':true,'hiddeCarousel':isLeaveHome}">
+				<ul id='imgBox'>
+					<li v-for='item in carousel' v-bind:class='{"current":$index === 0}'>
+						<a href="#/detail">
+							<img v-bind:src="'images/' + item.src" v-bind:style="'width:' + viewWidth + 'px'" alt="">
+						</a>
+					</li>
+				</ul>
+				<ul id='circle' class='clearfix'>
+					<li v-for='item in carousel' 
+						data-idx={{$index}} 
+						v-bind:class='{"current":$index === 0}'>
+					</li>
+				</ul>
+			</div>
+		</header>
+		<component v-bind:com-search='getSearch' v-bind:is='view'></component>
+		<footer v-show='isShowSearch'>
+			<div class="phone">
+				客服热线：
+				<span>400-xxx-xxx</span>
+			</div>
+			<div class="shopBox">
+				<span>合作商家</span>
+				<span>合作商家</span>
+				<span>合作商家</span>
+				<span>合作商家</span>
+			</div>
+		</footer>
+	</div>
+	
+<script type="text/template" id='homeTpl'>
+	<div>
+		<div class="shopContainer">
+			<div class="shopNav clearfix">
+				<ul>
+					<li v-for='item in shopList'>
+						<a href="#/list">
+							<img v-bind:src="'images/list/' + item.src" alt="">
+							<span>{{item.title}}</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="hotBoard clearfix">
+				<div class="hotNewLeft">
+					<p>TODAY</p>
+					<i>头</i><i>条</i>
+				</div>
+				<ul>
+					<li v-for='item in hotNew'>
+						<p>{{item.top}}</p>
+						<p>{{item.bottom}}</p>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="advertising">
+			<img src="/images/ad.png" alt="">
+			<span class="adText">广告</span>
+		</div>
+		<div class="discountLimit">
+			<div class="limitContainer clearfix">
+				<span class='limitTitle'>超<strong>值</strong>抢：</span>
+				<div class='timeLimit'></div>
+				<span class='getMore'><a href="#/list">更多优惠&gt;</a></span>
+			</div>
+			<ul class='onSaleContainer clearfix'>
+				<li v-for='item in onSale' v-if='$index <= 2'>
+					<i v-if='item.percent'>已抢:{{item.percent}}</i>
+					<i v-if='item.residue'>仅剩:{{item.residue}}件</i>
+					<a href="#/detail">
+						<img v-bind:src="'images/' + item.src" alt="">
+						<p>{{item.title}}</p>
+						<p>{{item.product}}</p>
+						<p>
+							<span class='oldPrice'>{{item.oldPrice | currency '&yen;'}}</span>
+							<span class='newPrice'>{{item.newPrice | currency '&yen'}}</span>
+						</p>
+					</a>
+				</li>
+			</ul>
+		</div>
+		
+		<div class="productClassify">
+			<div v-for="item in productData">
+				<div class='classifyNav clearfix'>{{$key}}<span>更多&gt;</span></div>
+				<div class='productsBox'>
+					<div v-for='item1 in item' v-if='$index <= 2'>
+						<a href="#/detail">
+							<img v-bind:src="'images/onSale/' + item1.src" alt="">
+							<p class='productText'>{{item1.title}}</p>
+							<p class='serve' v-if='$index === 0'>
+								<span v-for='item2 in item1.serve'>{{item2}}</span>
+							</p>
+							<p class='productSale'>
+								{{item1.price | currency '&yen;'}}
+								<span>月销量:{{item1.monthSale}}件</span>
+							</p>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</script>
+<script type="text/template" id='listTpl'>
+    <div class="sortTop">
+		<span v-for='item in orders' v-on:click='sortByType(item.id,$event)'>{{item.text}}</span>
+		<span v-show="!!comSearch" class='searchText'>
+			<b>
+				{{'"'+ (comSearch.length >= 3 ? comSearch.slice(0, 3) + '...' : comSearch) + '"'}}
+			</b>的结果
+		</span>
+	</div>
+	
+	<div class="productList">
+		<div v-for='item in listData  | filterBy comSearch'>
+			<a href="#/detail" class='clearfix'>
+				<img v-bind:src="'images/onSale/' + item.src" alt="">
+				<p class='productText'>{{item.title}}</p>
+				<p class='serve'>
+					<span v-for='item1 in item.serve'>{{item1}}</span>
+				</p>
+				<p class='shop'><span>{{item.shop}}</span></p>
+				<p class='productSale'>
+					{{item.price | currency '&yen;'}}
+					<span>月销量:{{item.monthSale}}件</span>
+				</p>
+			</a>
+		</div>
+		<div class="loadOther" v-show='otherData.length && !comSearch' v-on:tap='loadOther'>
+			<span>查看其它{{otherData.length}}件商品</span>
+		</div>
+	</div>
+</script>
+<script type="text/template" id='detailTpl'>
+	<div class='proDetailContainer' v-bind:class='{"isRight":!leftOrRight}'>
+		<div class="topMenu">
+			<span class='retreat' v-on:tap='retreat'><i></i><i></i></span>
+			<span class='isActive' v-on:click='showLeftOrRight($event,false)'>基本信息</span>
+			<span v-on:click='showLeftOrRight($event,true)'>商品详情</span>
+		</div>
+		
+		<div class="basic" v-bind:class='{"hiddenBasic":leftOrRight}'>
+			<div class="productImg">
+				<ul v-on:touchstart='imgMove($event)' id="imgList" class='clearfix' v-bind:style='"width:" + imgListWidth + "px"'>
+					<li v-for='item in detailData.detailImg'>
+						<img v-bind:src="'images/detail/' + item" v-bind:style="'width:' + viewWidth + 'px'">
+					</li>
+				</ul>
+				<ul id="dotList" v-bind:style='{"width":dotListWidth + "px","margin-left":-dotListWidth/2 + "px"}'>
+					<li 
+						v-for='item in detailData.detailImg'  
+						class='{{$index === 0 ? "active" : " "}}'
+						v-on:tap='changeImgIdx($event,$index)'
+					></li>
+				</ul>
+			</div>
+			
+			<div class="saleText">
+				<div class="titleText">{{detailData.title}}</div>
+				<div class="priceText">
+					<p>&yen;<strong>{{detailData.price | currency ''}}</strong></p>
+					<ul class='clearfix'>
+						<li>{{detailData.express |currency '&yen;'}}</li>
+						<li>月销量 {{detailData.monthlySales}}件</li>
+						<li>{{detailData.address}}</li>
+					</ul>
+				</div>
+				<div class="serveText">
+					<span v-for='item in detailData.serve'>{{item}}</span>
+				</div>
+			</div>
+			
+			<div class="productCls" v-on:tap='closePro(true)'>选择：商品<span>......</span></div>
+			<div class="shopText">
+				<img v-bind:src="'images/detail/shop.jpg'" alt="">
+				<h4>美邦乐其专营店</h4>
+				<ul class='clearfix'>
+					<li><a>全部商品</a></li>
+					<li><a>进入店铺</a></li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="detailBoxs" v-bind:class='{"hiddenDetail":!leftOrRight}'>
+			<ul>
+				<li v-for='item in detailData.productImg'>
+					<img v-bind:src="'images/detail/' + item" alt="">
+				</li>
+			</ul>
+		</div>
+		
+		<div class="proBg" v-show='prosShow'></div>
+		<div class="productCheck" v-bind:class='{"hiddenPros":!prosShow}'>
+			<div class="pTop">
+				<ul>
+					<li v-for='item in detailData.colors'>
+						<img v-show='$index === proIdx' v-bind:src="'images/detail/' + item.imgSrc" alt="">
+					</li>
+				</ul>
+				<p>{{detailData.price | currency '&yen;'}}</p>
+				<p>已选择：{{proCheck}}</p>
+			</div>
+			<div class="products">
+				<p>颜色分类</p>
+				<ul class='clearfix'>
+					<li 
+						v-for='item in detailData.colors' 
+						v-on:tap='changePro($index)' 
+						v-bind:class= '{"active" :$index === proIdx && item.available,"notHas": !item.available}'
+					>{{item.type}}
+					</li>
+				</ul>
+				<p>
+					<span class='checkNum'>数量</span>
+					<span v-on:click='proNumLt($event)' class="lt"><</span>
+					<!--<span>{{proNumCheck}}</span>-->
+					<input type="text" v-model='proNumCheck' value='{{proNumCheck}}'>
+					<span v-on:click='proNumGt($event)' class="gt">></span>
+				</p>
+			</div>
+			<i class='closePro' v-on:tap='closePro(false)'>x</i>
+		</div>
+		
+		<div class='bottomMenu'>
+			<ul class='clearfix'>
+				<li>客服</li>
+				<li>店铺</li>
+				<li>收藏</li>
+			</ul>
+			<ul class='clearfix'>
+				<li v-on:tap='shopCar'>加入购物车</li>
+			</ul>
+		</div>
+	</div>
+</script>
+
+<script type="text/javascript" src="/lib/js/lib_1183821.js"></script>
+<script type="text/javascript" src="/static/js/index_3916ccc.js"></script>
+<script type="text/javascript">
+	require('js/bootstrap')
+</script>
+</body>
+</html>
